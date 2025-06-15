@@ -1,8 +1,9 @@
 # kevit_prac
 
-# 📸 KevitGram - A Flutter Instagram-Style Social App
+# 📸 Kevit Practical - A Flutter Instagram-Style Social App
 
-KevitGram is a lightweight Instagram-style social media mobile app built using **Flutter** and *
+Kevit Practical is a lightweight Instagram-style social media mobile app built using **Flutter**
+and *
 *Riverpod**, featuring offline storage using **Hive**. It allows users to create image posts, like
 and comment, and view a paginated feed — all in a sleek, modern UI.
 
@@ -35,12 +36,18 @@ This app enables users to:
 
 ## 🧰 Tech Stack
 
-- **Flutter** (UI Framework)
+- **Flutter(3.29.0)** (UI Framework)
 - **Riverpod** (State Management)
 - **Hive** (Local NoSQL database)
 - **Image Picker** (Camera/Gallery access)
 - **Shared Preferences** (Simple persistent key-value storage)
 - **Dart** (Programming Language)
+
+---
+
+## 📦 APK Download
+
+👉 [Download APK](https://drive.google.com/drive/folders/1pmv9Sj0LItx9GZUtj5zClYIL0RaNP3RB?usp=drive_link)
 
 ---
 
@@ -53,20 +60,11 @@ This app enables users to:
 
 ### Steps:
 
-git clone https://github.com/yourusername/kevitgram.git
-cd kevitgram
+```bash
+git clone https://github.com/deepparsania/kevit_prac.git
+cd kevit_prac
 flutter pub get
 flutter packages pub run build_runner build
 flutter run
 
-📦 APK Download
-👉 Download APK
 
-📸 Screenshots
-Optional section — you can add screenshots here with ![screenshot](link)
-
-🙌 Acknowledgements
-Built with ❤️ by Kevit developers using Flutter.
-
-📜 License
-MIT License (or your preferred license)
