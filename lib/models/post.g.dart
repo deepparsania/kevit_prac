@@ -22,7 +22,7 @@ class PostAdapter extends TypeAdapter<Post> {
       caption: fields[2] as String,
       timestamp: fields[3] as DateTime,
       likes: fields[4] as int,
-      likedByUser: fields[5] as bool,
+      likedBy: (fields[5] as List?)?.cast<String>(),
       comments: (fields[6] as List?)?.cast<Comment>(),
     );
   }
@@ -42,7 +42,7 @@ class PostAdapter extends TypeAdapter<Post> {
       ..writeByte(4)
       ..write(obj.likes)
       ..writeByte(5)
-      ..write(obj.likedByUser)
+      ..write(obj.likedBy)
       ..writeByte(6)
       ..write(obj.comments);
   }

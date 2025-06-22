@@ -9,7 +9,7 @@ class Post extends HiveObject {
   @HiveField(2) String caption;
   @HiveField(3) DateTime timestamp;
   @HiveField(4) int likes;
-  @HiveField(5) bool likedByUser;
+  @HiveField(5) List<String> likedBy = [];
   @HiveField(6) List<Comment> comments;
 
   Post({
@@ -18,7 +18,8 @@ class Post extends HiveObject {
     required this.caption,
     required this.timestamp,
     this.likes = 0,
-    this.likedByUser = false,
+    List<String>? likedBy,
     List<Comment>? comments,
-  }) : comments = comments ?? [];
+  }) : comments = comments ?? [],likedBy = likedBy??[];
+
 }

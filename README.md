@@ -29,9 +29,10 @@ This app enables users to:
 - 💬 Comment on posts with timestamps
 - 📥 Download images to gallery
 - 🗂️ Local data persistence using Hive
-- 🔁 Feed with lazy loading / pagination
-- 🎨 Beautiful and responsive UI using Material Design
-
+- 🔁 Feed with lazy pagination
+- 🎨 Beautiful and responsive UI
+- 🔠 Expand long captions with click on caption
+- 🔍 Tap post image to view full-screen with pinch-to-zoom support
 ---
 
 ## 🧰 Tech Stack
@@ -47,7 +48,9 @@ This app enables users to:
 
 ## 📦 APK Download
 
-👉 [Download APK](https://drive.google.com/drive/folders/1pmv9Sj0LItx9GZUtj5zClYIL0RaNP3RB?usp=drive_link)
+👉 [Download APK V2.0](https://drive.google.com/file/d/1whIZqu9f6EH5xggkEs4loCGvhFYE-STb/view?usp=drive_link)
+
+👉 [Download APK V1.0](https://drive.google.com/drive/folders/1pmv9Sj0LItx9GZUtj5zClYIL0RaNP3RB?usp=drive_link)
 
 ---
 
@@ -66,5 +69,3 @@ cd kevit_prac
 flutter pub get
 flutter packages pub run build_runner build
 flutter run
-
-

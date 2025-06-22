@@ -1,9 +1,16 @@
 import 'dart:io';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:hive/hive.dart';
 import '../../../models/post.dart';
+import '../../utils/dimensions.dart';
+import '../../utils/my_color.dart';
+import '../../utils/style.dart';
+import '../../widget/custom_bottom_sheet.dart';
+import '../../widget/default_text.dart';
 import '../auth/auth_provider.dart';
 import '../feed/feed_provider.dart';
 
@@ -17,6 +24,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   final _captionCtrl = TextEditingController();
 
   Future<void> _pickImage(ImageSource source) async {
+    Navigator.pop(context);
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: source, imageQuality: 85);
     if (pickedFile != null) {
@@ -47,147 +55,233 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
+      // backgroundColor: MyColor.secondryColor,
       appBar: AppBar(
-        title: const Text("Create Post"),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.chevron_left, size: 30),
+        ),
+        titleSpacing: 0,
+        title: DefaultText(
+          text: "Create Post",
+          textStyle: outfitifSemiBoldText,
+          fontSize: Dimensions.fontExtraLarge,
+          textColor: MyColor.colorBlack,
+        ),
         elevation: 0,
-        backgroundColor: Colors.deepPurpleAccent,
-        foregroundColor: Colors.white,
+        //backgroundColor: MyColor.secondryColor,
+        foregroundColor: MyColor.colorBlack,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                /// Image Picker Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () => _pickImage(ImageSource.camera),
-                      icon: const Icon(
-                        Icons.camera_alt_outlined,
-                        color: Colors.white,
-                      ),
-                      label: const Text(
-                        "Camera",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () => _pickImage(ImageSource.gallery),
-                      icon: const Icon(
-                        Icons.photo_library_outlined,
-                        color: Colors.white,
-                      ),
-                      label: const Text(
-                        "Gallery",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              const SizedBox(height: 12),
 
-                const SizedBox(height: 20),
+              /// Image Preview
+              GestureDetector(
+                onTap: () {
+                  openPopup();
+                },
+                child:
+                    _image != null
+                        ? ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            height: 220,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 10,
+                                ),
+                              ],
+                            ),
+                            child: Image.file(_image!, fit: BoxFit.cover),
+                          ),
+                        )
+                        : DottedBorder(
+                          color: MyColor.lightGreyColor,
+                          strokeWidth: 1.5,
+                          dashPattern: [6, 3],
+                          borderType: BorderType.RRect,
+                          radius: const Radius.circular(12),
+                          child: Container(
+                            height: 180,
+                            width: double.infinity,
+                            //margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.circular(12),
+                              //border: Border.all(color: Colors.grey.shade400),
+                            ),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    "assets/icons/gallery.png",
+                                    width: 48,
+                                    height: 48,
+                                  ),
+                                  DefaultText(
+                                    text: "Upload your photo",
+                                    textStyle: outfitifSemiBoldText,
+                                    fontSize: Dimensions.fontLarge,
+                                  ),
 
-                /// Image Preview
-                if (_image != null)
-                  ClipRRect(
+                                  DefaultText(
+                                    text:
+                                        "Just tap here to browse your gallery\nto upload photo",
+                                    textStyle: outfitifRegularText,
+                                    maxLines: 2,
+                                    textAlign: TextAlign.center,
+                                    textColor: MyColor.uniqueColor,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+              ),
+              SizedBox(height: 16),
+
+              /// Caption Input
+              TextFormField(
+                maxLines: 5,
+                minLines: 4,
+                keyboardType: TextInputType.multiline,
+                controller: _captionCtrl,
+                autofocus: true,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (value) {
+                  _captionCtrl.text = value;
+                },
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 8,
+                  ),
+                  hintText: "Write a caption here...",
+                  hintStyle: outfitifRegularText.copyWith(
+                    color: MyColor.uniqueColor,
+                    fontSize: Dimensions.fontLarge,
+                  ),
+                  //fillColor: MyColor.iconBgColor,
+                  //filled: true,
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: MyColor.lightGreyColor),
                     borderRadius: BorderRadius.circular(16),
-                    child: Container(
-                      height: 220,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(color: Colors.black12, blurRadius: 10),
-                        ],
-                      ),
-                      child: Image.file(_image!, fit: BoxFit.cover),
-                    ),
-                  )
-                else
-                  Container(
-                    height: 180,
-                    width: double.infinity,
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade400),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "No image selected",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ),
                   ),
-
-                const SizedBox(height: 16),
-
-                /// Caption Input
-                TextField(
-                  controller: _captionCtrl,
-                  decoration: InputDecoration(
-                    labelText: 'Write a caption...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    prefixIcon: Icon(Icons.edit_note_outlined),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: MyColor.lightGreyColor),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: MyColor.lightGreyColor),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  disabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: MyColor.lightGreyColor),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
+                onChanged: (data) {},
+              ),
 
-                const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-                /// Submit Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: _submitPost,
-                    icon: Icon(Icons.send, color: Colors.white),
-                    label: const Text(
-                      "Post",
-                      style: TextStyle(color: Colors.white),
+              /// Submit Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _submitPost,
+                  //icon: Icon(Icons.send, color: Colors.white),
+                  label: const Text(
+                    "Post",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    backgroundColor: MyColor.primaryColor,
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      backgroundColor: Colors.deepPurpleAccent,
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  void openPopup() {
+    return CustomBottomSheet(
+      backgroundColor: MyColor.colorWhite,
+      isNeedMargin: false,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 4,
+            width: 40,
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
+              color: MyColor.primaryColor.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(3),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: MyColor.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () => _pickImage(ImageSource.camera),
+                icon: const Icon(
+                  Icons.camera_alt_outlined,
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  "Camera",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: MyColor.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () => _pickImage(ImageSource.gallery),
+                icon: const Icon(
+                  Icons.photo_library_outlined,
+                  color: Colors.white,
+                ),
+                label: const Text(
+                  "Gallery",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ).customBottomSheet(context);
   }
 }

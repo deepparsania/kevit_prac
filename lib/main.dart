@@ -4,6 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kevit_prac/models/comment.dart';
 import 'package:kevit_prac/screens/auth/auth_provider.dart';
 import 'package:kevit_prac/screens/feed/feed.dart';
+import 'package:kevit_prac/screens/splash/splash_screen.dart';
 import 'package:kevit_prac/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +29,6 @@ void main() async {
       child:MaterialApp(
     title: 'Kevit prac',
     theme: ThemeData(primarySwatch: Colors.blue),
-    home: hasLogin.isNotEmpty?FeedScreen():LoginScreen(),
+    home: SplashScreen(hasLogin: hasLogin),
   )));
 }

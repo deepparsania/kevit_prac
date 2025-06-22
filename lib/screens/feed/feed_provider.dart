@@ -25,6 +25,7 @@ class FeedNotifier extends StateNotifier<List<Post>> {
 
   void loadMore() {
     _page++;
+    print(_page);
     _onBoxChanged(); // reapply pagination
   }
 
